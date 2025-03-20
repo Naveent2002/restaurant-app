@@ -1,4 +1,3 @@
-// Menu Reducer
 export const menuReducer = (state = { items: [], loading: false, error: null }, action) => {
   switch (action.type) {
     case 'FETCH_MENU_REQUEST':
@@ -84,57 +83,55 @@ export const cartReducer = (state = { items: [], totalAmount: 0 }, action) => {
 };
 
 // Order Reducer
-export const orderReducer = (
-  state = { orders: [], loading: false, error: null, lastUpdated: null },
-  action
-) => {
+export const orderReducer = (state = { orders: [], loading: false, error: null, lastUpdated: null }, action) => {
   switch (action.type) {
     case 'PLACE_ORDER_REQUEST':
     case 'FETCH_ORDERS_REQUEST':
     case 'UPDATE_ORDER_STATUS_REQUEST':
-      return {
-        ...state,
-        loading: true,
-        error: null,
+      return { 
+        ...state, 
+        loading: true, 
+        error: null 
       };
-
+          
     case 'PLACE_ORDER_SUCCESS':
       return {
         ...state,
         loading: false,
         orders: [action.payload, ...state.orders],
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       };
-
+          
     case 'FETCH_ORDERS_SUCCESS':
       return {
         ...state,
         loading: false,
         orders: action.payload,
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       };
-
+          
     case 'UPDATE_ORDER_STATUS_SUCCESS': {
       const updatedOrder = action.payload;
       return {
         ...state,
         loading: false,
-        orders: state.orders.map((order) =>
+        // Ensure we're properly replacing the order with the updated one
+        orders: state.orders.map(order => 
           order._id === updatedOrder._id ? updatedOrder : order
         ),
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       };
     }
-
+        
     case 'PLACE_ORDER_FAILURE':
     case 'FETCH_ORDERS_FAILURE':
     case 'UPDATE_ORDER_STATUS_FAILURE':
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
+      return { 
+        ...state, 
+        loading: false, 
+        error: action.payload 
       };
-
+          
     default:
       return state;
   }

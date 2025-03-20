@@ -3,11 +3,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const connectDB = require('./middleware/config/db');
+const connectDB = require('./middleware/config/db'); // Ensure this path is correct
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const errorHandler = require('./middleware/errorHandler');
-const seedMenuItems = require('./seed/seedData');
+const errorHandler = require('./middleware/errorHandler'); // Ensure this path is correct
+const seedMenuItems = require('./seed/seedData'); // Ensure this path is correct
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,14 +15,6 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors()); // Enable CORS for all routes
 app.use(bodyParser.json()); // Parse incoming JSON requests
-
-// Connect to MongoDB
-connectDB();
-
-// Seed data (optional: use with caution in production)
-if (process.env.NODE_ENV === 'development') {
-  seedMenuItems();
-}
 
 // Routes
 app.use('/api/menu', menuRoutes);
@@ -36,11 +28,8 @@ app.get('/api/health', (req, res) => {
 // Error handling middleware (must be after routes)
 app.use(errorHandler);
 
-// Handle preflight requests for all routes
-app.options('*', cors()); // Enable preflight for all routes
-
 // Handle 404 routes
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
@@ -49,6 +38,11 @@ const startServer = async () => {
   try {
     // Connect to MongoDB
     await connectDB();
+
+    // Seed data (optional: use with caution in production)
+    if (process.env.NODE_ENV === 'development') {
+      await seedMenuItems();
+    }
 
     // Start the server
     app.listen(PORT, () => {

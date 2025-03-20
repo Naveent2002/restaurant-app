@@ -9,8 +9,7 @@ function Cart() {
   const { items, totalAmount } = useSelector((state) => state.cart);
   const [customerInfo, setCustomerInfo] = useState({
     customerName: '',
-    customerPhone: '',
-    address: '', // Add address field
+    customerPhone: '', // No address field
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,11 +41,6 @@ function Cart() {
       return;
     }
 
-    if (!customerInfo.address.trim()) {
-      alert('Please enter your address.');
-      return;
-    }
-
     const orderData = {
       items: items.map((item) => ({
         item: item._id,
@@ -55,7 +49,7 @@ function Cart() {
         quantity: item.quantity,
       })),
       totalAmount,
-      ...customerInfo, // Include address in the order data
+      ...customerInfo, // No address field
     };
 
     setIsSubmitting(true);
@@ -130,19 +124,6 @@ function Cart() {
                   name="customerPhone"
                   value={customerInfo.customerPhone}
                   onChange={handleInputChange}
-                />
-              </div>
-
-              {/* Add address field */}
-              <div className="form-group">
-                <label htmlFor="address">Address:</label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={customerInfo.address}
-                  onChange={handleInputChange}
-                  required
                 />
               </div>
 

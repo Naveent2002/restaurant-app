@@ -4,7 +4,8 @@ export const fetchMenu = () => async (dispatch) => {
   try {
     const response = await fetch('http://localhost:5000/api/menu');
     if (!response.ok) {
-      throw new Error('Failed to fetch menu');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch menu');
     }
     const data = await response.json();
     dispatch({ type: 'FETCH_MENU_SUCCESS', payload: data });
@@ -31,7 +32,8 @@ export const addMenuItem = (item) => async (dispatch) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to add menu item');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to add menu item');
     }
 
     const data = await response.json();
@@ -76,12 +78,13 @@ export const placeOrder = (orderData) => async (dispatch) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to place order');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to place order');
     }
 
     const data = await response.json();
     dispatch({ type: 'PLACE_ORDER_SUCCESS', payload: data });
-    dispatch({ type: 'CLEAR_CART' });
+    dispatch({ type: 'CLEAR_CART' }); // Clear the cart after placing the order
     return data;
   } catch (error) {
     dispatch({ type: 'PLACE_ORDER_FAILURE', payload: error.message });
@@ -95,7 +98,8 @@ export const fetchOrders = () => async (dispatch) => {
     const response = await fetch('http://localhost:5000/api/orders');
 
     if (!response.ok) {
-      throw new Error('Failed to fetch orders');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch orders');
     }
 
     const data = await response.json();

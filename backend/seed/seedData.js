@@ -1,26 +1,16 @@
 const MenuItem = require('../models/MenuItem');
 
 const seedMenuItems = async () => {
-  const count = await MenuItem.countDocuments();
-  if (count === 0) {
+  try {
+    await MenuItem.deleteMany(); // Clear existing data
     const menuItems = [
-      {
-        name: 'Margherita Pizza',
-        description: 'Classic pizza with tomato sauce, mozzarella, and basil',
-        price: 12.99,
-        category: 'Pizza',
-        image: 'https://picsum.photos/id/292/200/200',
-      },
-      {
-        name: 'Veggie Burger',
-        description: 'Plant-based patty with lettuce, tomato, and special sauce',
-        price: 9.99,
-        category: 'Burgers',
-        image: 'https://picsum.photos/id/293/200/200',
-      },
+      { name: 'Pizza', description: 'Delicious pizza', price: 10, imageUrl: 'pizza.jpg' },
+      { name: 'Burger', description: 'Tasty burger', price: 8, imageUrl: 'burger.jpg' },
     ];
     await MenuItem.insertMany(menuItems);
-    console.log('Sample menu items added');
+    console.log('Menu items seeded successfully');
+  } catch (error) {
+    console.error('Error seeding menu items:', error);
   }
 };
 

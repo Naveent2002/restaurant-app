@@ -12,7 +12,6 @@ const orderSchema = new mongoose.Schema({
   totalAmount: { type: Number, required: true },
   customerName: { type: String, required: true },
   customerPhone: { type: String },
-  address: { type: String, required: true },
   status: {
     type: String,
     enum: ['Pending', 'Cooking', 'Ready', 'Delivered'],

@@ -1,4 +1,4 @@
-const Order = require('../models/Order'); // Ensure this path is correct
+const Order = require('../models/Order');
 
 // Get all orders
 exports.getOrders = async (req, res) => {
@@ -12,15 +12,25 @@ exports.getOrders = async (req, res) => {
 
 // Create a new order
 exports.createOrder = async (req, res) => {
-  const { items, totalAmount, customerName, customerPhone, adderss } = req.body;
+  const { items, totalAmount, customerName, customerPhone } = req.body;
+
+  // Validate required fields
+  if (!customerName || !items || !totalAmount) {
+    return res.status(400).json({ message: 'Required fields are missing' });
+  }
+
   try {
-    const newOrder = new Order({ items, totalAmount, customerName, customerPhone, adderss });
-     // Save the order to the database
-     const savedOrder = await newOrder.save();
+    const newOrder = new Order({
+      items,
+      totalAmount,
+      customerName,
+      customerPhone,
+    });
+
     await newOrder.save();
     res.status(201).json(newOrder);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -55,6 +65,24 @@ exports.updateOrder = async (req, res) => {
   }
 };
 
+// Update order status by ID
+exports.updateOrderStatus = async (req, res) => {
+  const { status } = req.body;
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status, updatedAt: Date.now() },
+      { new: true }
+    ).populate('items.item');
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 // Delete an order by ID
 exports.deleteOrder = async (req, res) => {
   try {
@@ -64,27 +92,6 @@ exports.deleteOrder = async (req, res) => {
     }
     res.status(200).json({ message: 'Order deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-//Update order status
-exports.updateOrderStatus = async (req, res) => {
-  const { status } = req.body;
-  try {
-    const updatedOrder = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    );
-    if (!updatedOrder) {
-      console.log('Order not found'); // Log the error
-      return res.status(404).json({ message: 'Order not found' });
-    }
-    console.log('Order updated:', updatedOrder); // Log the success
-    res.status(200).json(updatedOrder);
-  } catch (error) {
-    console.error('Error updating order:', error); // Log the error
     res.status(500).json({ message: error.message });
   }
 };

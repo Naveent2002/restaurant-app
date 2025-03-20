@@ -7,6 +7,6 @@ router.post('/', orderController.createOrder);
 router.get('/:id', orderController.getOrderById);
 router.put('/:id', orderController.updateOrder);
 router.delete('/:id', orderController.deleteOrder);
-router.patch('/:id', orderController.updateOrderStatus);
+router.patch('/:id', orderController.updateOrderStatus); // Ensure this function exists in orderController.js
 
 module.exports = router;
